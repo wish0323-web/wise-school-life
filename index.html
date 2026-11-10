@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="등교부터 하교까지, 시간표·학사 일정·급식·숙제·용돈 기입장을 한곳에 모은 중학생 생활 도우미">
-<meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0b2226" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#3158d8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101d36" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://open.neis.go.kr; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="mobile-web-app-capable" content="yes">
@@ -177,14 +177,121 @@ html.hc .card,html.hc .dish,html.hc .cell{border-width:2px}
 .cell.today{border-color:var(--main);border-width:2px}
 .sum{white-space:pre-wrap;font:inherit;margin:0 0 12px;color:var(--ink)}
 </style>
+
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--ink:#172033;--mute:#68758d;--line:#e3e8f1;--main:#3158d8;--on-main:#fff;--soft:#eaf0ff;--gold:#ffc45b;--warn:#c73545;--warn-bg:#fff0f1;--ok:#167b68;--ok-bg:#e8f6f1;--hero:#172b52;--r:22px;--rs:14px;--font:Inter,'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1524;--card:#172236;--ink:#edf2fc;--mute:#a5b2c8;--line:#2a3850;--main:#86a5ff;--on-main:#101b34;--soft:#202f50;--gold:#f4c36a;--warn:#ff8e98;--warn-bg:#3b202b;--ok:#66d2b2;--ok-bg:#153a37;--hero:#101d36}}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(ellipse at 80% -12%,rgba(49,88,216,.10),transparent 38%),var(--bg);letter-spacing:-.015em;font-size:calc(15px * var(--text-scale,1))}
+.app{max-width:1240px;padding:0 24px 112px}
+.top{padding:24px 0 20px;gap:18px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand-mark{display:grid;place-items:center;width:42px;height:42px;flex:none;border-radius:14px;background:linear-gradient(145deg,#3158d8,#5c82f3);color:#fff;font-weight:850;font-size:21px;box-shadow:0 8px 18px rgba(49,88,216,.22)}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.top-actions .btn{height:38px;padding:0 13px;font-size:13px}
+.school{margin-top:4px}
+.card{padding:20px;margin-bottom:14px;border-radius:var(--r);box-shadow:0 8px 26px rgba(21,36,69,.045);transition:box-shadow .18s ease,border-color .18s ease}
+.card:focus-within{border-color:color-mix(in srgb,var(--main) 45%,var(--line))}
+.btn{height:44px;border-radius:13px;padding:0 18px;box-shadow:0 4px 10px rgba(36,68,148,.13);transition:transform .16s ease,filter .16s ease}
+.btn:hover{filter:brightness(1.04);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn.ghost{box-shadow:none}
+.search input,.cfg input,textarea,select{min-height:44px;border-radius:13px}
+.results button{padding:13px 14px;border-radius:14px;transition:border-color .16s ease,background .16s ease}
+.results button:hover{border-color:var(--main);background:var(--soft)}
+.hero{background:linear-gradient(125deg,#172b52,#244b88);box-shadow:0 14px 30px rgba(21,40,78,.14);border-radius:24px}
+.cathead{border-radius:18px;padding:18px 20px}
+.cathead b{font-size:20px}
+.tabs{border-radius:14px;border:1px solid var(--line);padding:0 8px;margin:0 0 16px}
+.tabs button{padding:12px 16px}
+.tabs button[aria-current=true]{box-shadow:inset 0 -3px 0 var(--main)}
+.intro{border-radius:16px}
+.stat,.dish,.cell{border-radius:13px}
+.now{border-radius:18px;padding:16px 18px}
+.nav button{transition:background .16s ease,color .16s ease}
+.nav button[aria-current=true]{border-radius:14px}
+#nick,#picker{max-width:660px;margin:22px auto 18px;padding:24px}
+#nick h2,#picker h2{font-size:20px}
+#nick .intro,#picker .intro{margin-bottom:20px}
+.cfg{gap:14px}
+.cfg label{gap:6px}
+.tt{min-width:520px}
+.tt th,.tt td{padding:10px 7px}
+.focus-card{padding:24px}
+.focus-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.focus-heading h2{margin:0 0 4px;font-size:21px}
+.eyebrow{margin:0 0 5px;color:var(--main);font-size:11px;font-weight:800;letter-spacing:.14em}
+.focus-count{display:grid;gap:2px;min-width:112px;padding:10px 13px;border-radius:14px;background:var(--soft);text-align:center;color:var(--main)}
+.focus-count b{font-size:23px;line-height:1.2}
+.focus-count span{font-size:11px;font-weight:600}
+.focus-modes{display:flex;justify-content:center;gap:8px;margin:20px 0 4px}
+.focus-modes button{height:38px;padding:0 16px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--mute);font-weight:700}
+.focus-modes button[aria-pressed=true]{background:var(--soft);border-color:var(--main);color:var(--main)}
+.focus-dial{--progress:0%;display:grid;place-items:center;width:216px;height:216px;margin:22px auto 12px;border-radius:50%;background:conic-gradient(var(--main) var(--progress),var(--line) 0);font-size:48px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.04em;color:var(--ink);position:relative}
+.focus-dial:before{content:"";position:absolute;inset:10px;border-radius:50%;background:var(--card);z-index:-1}
+.focus-dial{isolation:isolate}
+.focus-dial:after{content:attr(data-value);position:absolute;inset:0;display:grid;place-items:center;z-index:1}
+.focus-dial{font-size:0}
+.focus-dial:after{content:none}
+.focus-dial{color:var(--ink)}
+.focus-dial{z-index:0}
+.focus-dial{position:relative}
+.focus-dial{font-size:48px}
+.focus-status{text-align:center;margin:0 0 16px;font-size:14px;font-weight:700;color:var(--mute)}
+.focus-actions{display:flex;justify-content:center;gap:10px}
+.focus-actions .btn{min-width:118px}
+#focus-note{text-align:center;min-height:20px}
+@media(min-width:760px){
+  .app{padding-bottom:48px}
+  #main{display:grid;grid-template-columns:205px minmax(0,1fr);gap:0 26px;align-items:start}
+  #nav{position:sticky;top:20px;grid-column:1;grid-row:1 / span 8;display:grid;gap:6px;width:100%;max-width:none;margin:0;padding:12px;border:1px solid var(--line);border-radius:20px;box-shadow:0 8px 26px rgba(21,36,69,.045)}
+  #nav button{display:flex;align-items:center;justify-content:flex-start;gap:12px;padding:12px 14px;border-radius:13px;font-size:14px}
+  #nav button span:first-child{width:24px;font-size:19px;text-align:center}
+  #nav button span:last-child{font-size:14px}
+  #cathead{grid-column:2;grid-row:1}
+  #subtabs{grid-column:2;grid-row:2;margin:0 0 16px;top:0}
+  #main>div:not(#cathead):not(#subtabs),#algcard{grid-column:2;min-width:0}
+}
+@media(min-width:1100px){
+  #main{grid-template-columns:220px minmax(0,1fr);gap:0 30px}
+  #go,#tt,#ev,#today,#week,#month,#me,#back,#focus,#bank,#dd,#info,#hw,#set{max-width:960px}
+}
+@media(max-width:759px){
+  .app{padding-left:16px;padding-right:16px}
+  .top{padding:18px 0 14px}
+  .brand-mark{width:38px;height:38px}
+  .top-actions{gap:6px}
+  .top-actions .btn{padding:0 10px;font-size:12px}
+  .card{padding:16px;border-radius:18px}
+  .focus-dial{width:190px;height:190px;font-size:43px}
+}
+@media(max-width:420px){
+  .top{align-items:flex-start}
+  .top-actions{display:grid;gap:5px}
+  .top-actions .btn{height:34px}
+  .brand{gap:9px}
+  .brand h1{font-size:18px}
+  .school{font-size:11px}
+  .focus-heading{display:block}
+  .focus-count{display:inline-grid;grid-template-columns:auto auto;align-items:center;gap:7px;margin-top:10px;text-align:left}
+  .focus-count b{font-size:19px}
+  .focus-modes button{padding:0 12px}
+  .cfg{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+</style>
+
 </head>
 <body>
 <div id="offline" class="offline" role="status" hidden>인터넷에 연결되어 있지 않아요. 저장된 자료를 보여 줘요.</div>
 <noscript><p style="padding:16px">이 앱은 자바스크립트가 필요해요. 브라우저 설정에서 켜 주세요.</p></noscript>
 <div class="app">
   <div class="top">
-    <div><h1>슬기로운 중학생활</h1><div class="school" id="school">학교를 선택해 주세요</div></div>
-    <button class="btn ghost" id="change" type="button" hidden>학교 바꾸기</button>
+    <div class="brand"><div class="brand-mark" aria-hidden="true">S</div><div><h1>슬기로운 중학생활</h1><div class="school" id="school">학교를 선택해 주세요</div></div></div>
+    <div class="top-actions">
+      <button class="btn ghost" id="switch-user" type="button" hidden aria-label="다른 사용자 프로필로 전환">사용자 바꾸기</button>
+      <button class="btn ghost" id="change" type="button" hidden>학교 바꾸기</button>
+    </div>
   </div>
 
   <section class="card" id="nick" hidden>
@@ -192,7 +299,7 @@ html.hc .card,html.hc .dish,html.hc .cell{border-width:2px}
     <h2>처음에 어떻게 불러드릴까요?</h2>
     <div class="search"><input id="nin" type="text" maxlength="12" autocomplete="off" enterkeyhint="done" aria-label="닉네임" placeholder="닉네임 입력"><button class="btn" id="nsave" type="button">시작하기</button></div>
     <button class="btn ghost block" id="nskip" type="button" style="margin-top:12px">이름 없이 시작하기</button>
-    <div class="msg">입력한 닉네임은 이 기기의 브라우저에만 저장돼요. 설정에서 언제든 바꿀 수 있어요.</div>
+    <div class="msg">닉네임은 현재 브라우저 탭의 이용 세션에 적용돼요. 다음에 새로 접속하면 다시 선택할 수 있고, 같은 닉네임을 입력하면 이 브라우저에 저장된 해당 프로필 기록을 불러와요.</div>
   </section>
 
   <section class="card" id="picker">
@@ -213,7 +320,7 @@ html.hc .card,html.hc .dish,html.hc .cell{border-width:2px}
     <div class="tabs" id="subtabs" role="group" aria-label="세부 메뉴"></div>
     <div id="go" hidden></div><div id="tt" hidden></div><div id="ev" hidden></div>
     <div id="today" hidden></div><div id="week" hidden></div><div id="month" hidden></div><div id="me" hidden></div>
-    <div id="back" hidden></div><div id="bank" hidden></div><div id="dd" hidden></div><div id="info" hidden></div><div id="hw" hidden></div><div id="set" hidden></div>
+    <div id="back" hidden></div><div id="focus" hidden></div><div id="bank" hidden></div><div id="dd" hidden></div><div id="info" hidden></div><div id="hw" hidden></div><div id="set" hidden></div>
     <section class="card" id="algcard" hidden>
       <details><summary>내 알레르기 설정</summary><div class="algs" id="algs"></div><p class="foot">체크한 성분이 들어간 메뉴는 빨간색으로 표시돼요.</p></details>
     </section>
@@ -230,19 +337,54 @@ let NEIS_KEY = "336397f38034426aa1684a87f8ce4b3c"; // 나이스 교육정보 개
 const ALG = ["","난류","우유","메밀","땅콩","대두","밀","고등어","게","새우","돼지고기","복숭아","토마토","아황산류","호두","닭고기","쇠고기","오징어","조개류","잣"];
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+// 닉네임은 현재 탭 세션에만 보관합니다. 개인 기록은 닉네임별 저장 공간으로 분리합니다.
+const SESSION_PROFILE = "slm:active-profile";
+const SESSION_NICK = "slm:active-nick";
+const safeSessionGet = k => { try { return sessionStorage.getItem(k); } catch(e) { return null; } };
+const safeSessionSet = (k, v) => { try { sessionStorage.setItem(k, v); } catch(e) {} };
+const safeSessionRemove = k => { try { sessionStorage.removeItem(k); } catch(e) {} };
+let activeProfile = safeSessionGet(SESSION_PROFILE) || "";
+let nick = safeSessionGet(SESSION_NICK);
+const profileStoragePrefix = () => activeProfile ? "slm:user:" + activeProfile + ":" : "";
+const profileStorageKey = k => activeProfile ? (profileStoragePrefix() + k) : "";
 const store = {
-  get(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } },
-  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+  get(k, d){ try { const key = profileStorageKey(k); if (!key) return d; const v = localStorage.getItem(key); return v === null ? d : JSON.parse(v); } catch(e){ return d; } },
+  set(k, v){ try { const key = profileStorageKey(k); if (key) localStorage.setItem(key, JSON.stringify(v)); } catch(e){} },
+  rawGet(k){ try { const key = profileStorageKey(k); return key ? localStorage.getItem(key) : null; } catch(e){ return null; } },
+  rawSet(k, v){ try { const key = profileStorageKey(k); if (key) localStorage.setItem(key, v); } catch(e){} },
+  removeProfile(){ try { const prefix = profileStoragePrefix(); if (!prefix) return; const keys = []; for (let i=0; i<localStorage.length; i++){ const k=localStorage.key(i); if (k && k.startsWith(prefix)) keys.push(k); } keys.forEach(k=>localStorage.removeItem(k)); } catch(e){} }
 };
-// 이전 버전에서 저장한 인증키가 새 인증키를 덮어쓰지 않도록 정리합니다.
+function profileIdFor(value){
+  const name = String(value || "").trim().normalize("NFKC").toLocaleLowerCase("ko-KR");
+  if (!name) return "guest-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,8);
+  return "name-" + encodeURIComponent(name);
+}
+// 이전 버전의 단일 사용자 기록을 첫 프로필에 한 번만 옮깁니다.
+const LEGACY_PROFILE_KEYS = ["school","alg","taste","diary","cfg","auto","bank","goal","dday","hw","ui","welcome","list-go","list-back","chk-go","chk-back","gear","ttov","budget"];
+function migrateLegacyProfile(){
+  try {
+    if (localStorage.getItem("slm:legacy-migrated") === "1" || !activeProfile) return;
+    const prefix = profileStoragePrefix();
+    for (const key of LEGACY_PROFILE_KEYS){
+      const oldValue = localStorage.getItem(key);
+      if (oldValue !== null && localStorage.getItem(prefix + key) === null) localStorage.setItem(prefix + key, oldValue);
+      if (oldValue !== null) localStorage.removeItem(key);
+    }
+    localStorage.removeItem("nick");
+    localStorage.removeItem("neisKey");
+    localStorage.setItem("slm:legacy-migrated", "1");
+  } catch(e) {}
+}
+if (activeProfile) migrateLegacyProfile();
+// 공개 API 자료 캐시는 사용자 개인정보와 무관하므로 공용으로 유지합니다.
 try {
   localStorage.removeItem("neisKey");
-  if (localStorage.getItem("neis-key-version") !== "2026-11-10-final") {
+  if (localStorage.getItem("neis-key-version") !== "2026-11-10-profiled") {
     for (let i = localStorage.length - 1; i >= 0; i--) {
       const k = localStorage.key(i);
       if (k && k.startsWith("c:")) localStorage.removeItem(k);
     }
-    localStorage.setItem("neis-key-version", "2026-11-10-final");
+    localStorage.setItem("neis-key-version", "2026-11-10-profiled");
   }
 } catch(e) {}
 let school = store.get("school", null);
@@ -798,6 +940,54 @@ document.addEventListener("click", e => {
   }
 });
 
+
+/* 학습 집중 타이머 · 포모도로 */
+const FOCUS_WORK = 25 * 60, FOCUS_BREAK = 5 * 60;
+let focusState = Object.assign({mode:"work", remaining:FOCUS_WORK, endAt:0, running:false, sessions:0}, store.get("focus", {}));
+function focusLeft(){ return focusState.running ? Math.max(0, Math.ceil((focusState.endAt - Date.now()) / 1000)) : Math.max(0, +focusState.remaining || 0); }
+function saveFocus(){ focusState.remaining = focusLeft(); store.set("focus", focusState); }
+function focusDisplay(){
+  const el = $("#focus-time"); if (!el) return;
+  const left = focusLeft(), mm = String(Math.floor(left/60)).padStart(2,"0"), ss = String(left%60).padStart(2,"0");
+  el.textContent = mm + ":" + ss;
+  const total = focusState.mode === "work" ? FOCUS_WORK : FOCUS_BREAK;
+  el.style.setProperty("--progress", (100 * (1 - left / total)) + "%");
+  const action = $("#focus-toggle"); if (action) action.textContent = focusState.running ? "일시 정지" : "시작";
+  const mode = $("#focus-mode"); if (mode) mode.textContent = focusState.mode === "work" ? "집중할 시간" : "잠깐 쉬어 가요";
+  const count = $("#focus-count"); if (count) count.textContent = String(focusState.sessions || 0);
+}
+function renderFocus(){
+  const el = $("#focus"); if (!el) return;
+  const left = focusLeft();
+  el.innerHTML = '<section class="card focus-card"><div class="focus-heading"><div><p class="eyebrow">STUDY FLOW</p><h2>집중 타이머</h2><p class="msg">짧게 집중하고 충분히 쉬면서 공부 리듬을 만들어 보세요.</p></div><div class="focus-count"><b id="focus-count">' + (focusState.sessions || 0) + '</b><span>완료한 집중 세션</span></div></div><div class="focus-modes"><button type="button" data-focus-mode="work"' + (focusState.mode === "work" ? ' aria-pressed="true"' : '') + '>집중 25분</button><button type="button" data-focus-mode="break"' + (focusState.mode === "break" ? ' aria-pressed="true"' : '') + '>휴식 5분</button></div><div class="focus-dial" id="focus-time" role="timer" aria-live="off">--:--</div><p class="focus-status" id="focus-mode">' + (focusState.mode === "work" ? "집중할 시간" : "잠깐 쉬어 가요") + '</p><div class="focus-actions"><button class="btn" id="focus-toggle" type="button">' + (focusState.running ? "일시 정지" : "시작") + '</button><button class="btn ghost" id="focus-reset" type="button">초기화</button></div><p class="foot" id="focus-note">집중이 끝나면 휴식 시간으로 전환할 수 있어요. 진행 상태는 이 프로필에 저장됩니다.</p></section><section class="card"><h2>추천 공부 루틴</h2><div class="row"><div class="d">25분<small>집중</small></div><div>한 과목 또는 한 가지 과제에만 집중해요.</div></div><div class="row"><div class="d">5분<small>휴식</small></div><div>자리에서 일어나 몸을 움직이고 눈을 쉬게 해요.</div></div><div class="row"><div class="d">4회<small>반복</small></div><div>집중 세션을 네 번 마치면 조금 더 긴 휴식을 가져 보세요.</div></div></section>';
+  focusDisplay();
+}
+function setFocusMode(mode){
+  focusState.mode = mode === "break" ? "break" : "work";
+  focusState.running = false; focusState.endAt = 0; focusState.remaining = focusState.mode === "work" ? FOCUS_WORK : FOCUS_BREAK;
+  store.set("focus", focusState); renderFocus();
+}
+function toggleFocus(){
+  if (focusState.running){ focusState.remaining = focusLeft(); focusState.running = false; focusState.endAt = 0; }
+  else { if (focusLeft() <= 0) focusState.remaining = focusState.mode === "work" ? FOCUS_WORK : FOCUS_BREAK; focusState.endAt = Date.now() + focusState.remaining * 1000; focusState.running = true; }
+  store.set("focus", focusState); focusDisplay();
+}
+function resetFocus(){ focusState.running = false; focusState.endAt = 0; focusState.remaining = focusState.mode === "work" ? FOCUS_WORK : FOCUS_BREAK; store.set("focus", focusState); focusDisplay(); }
+function completeFocus(){
+  focusState.running = false; focusState.endAt = 0;
+  if (focusState.mode === "work"){ focusState.sessions = (focusState.sessions || 0) + 1; focusState.mode = "break"; focusState.remaining = FOCUS_BREAK; }
+  else { focusState.mode = "work"; focusState.remaining = FOCUS_WORK; }
+  store.set("focus", focusState); renderFocus();
+  const note = $("#focus-note"); if (note) note.textContent = focusState.mode === "break" ? "집중 세션을 완료했어요. 이제 5분간 쉬어 보세요." : "휴식이 끝났어요. 다음 집중 세션을 시작해 보세요.";
+}
+setInterval(() => { if (!focusState.running) return; if (focusLeft() <= 0) completeFocus(); else focusDisplay(); }, 1000);
+document.addEventListener("click", e => {
+  const mode = e.target.closest("[data-focus-mode]");
+  if (mode){ setFocusMode(mode.dataset.focusMode); return; }
+  if (e.target.closest("#focus-toggle")){ toggleFocus(); return; }
+  if (e.target.closest("#focus-reset")){ resetFocus(); }
+});
+
 /* 용돈 기입장 */
 let bank = store.get("bank", []);
 const BC = ["식비", "간식", "문구", "취미", "교통", "저축", "기타"];
@@ -894,23 +1084,23 @@ document.addEventListener("click", e => {
 
 /* 설정 · 접근성 · 백업 */
 // 백업에 담는 기록. 인증키와 불러온 자료(캐시)는 담지 않아요.
-const KEEP = new Set(["school", "alg", "taste", "diary", "cfg", "auto", "bank", "goal", "dday", "hw", "ui", "welcome", "list-go", "list-back", "chk-go", "chk-back", "gear", "nick", "ttov", "budget"]);
+const KEEP = new Set(["school", "alg", "taste", "diary", "cfg", "auto", "bank", "goal", "dday", "hw", "ui", "welcome", "list-go", "list-back", "chk-go", "chk-back", "gear", "ttov", "budget", "focus"]);
 const b64e = t => { let r = ""; new TextEncoder().encode(t).forEach(x => r += String.fromCharCode(x)); return btoa(r); };
 const b64d = c => new TextDecoder().decode(Uint8Array.from(atob(c), ch => ch.charCodeAt(0)));
 let ui = Object.assign({size: 0, hc: false}, store.get("ui", {}));
-function applyUi(){ document.body.style.zoom = [1, 1.12, 1.25][ui.size] || 1; document.documentElement.classList.toggle("hc", !!ui.hc); }
+function applyUi(){ document.documentElement.style.setProperty("--text-scale", [1, 1.08, 1.16][ui.size] || 1); document.documentElement.classList.toggle("hc", !!ui.hc); }
 function renderSet(){
   const el = $("#set"); if (!el) return;
-  el.innerHTML = '<section class="card"><h2>닉네임</h2><div class="search"><input id="nset" type="text" maxlength="12" autocomplete="off" value="' + esc(nick || "") + '" placeholder="부르고 싶은 이름" aria-label="닉네임"><button class="btn" id="nsv" type="button">저장</button></div><div class="msg" id="nm"></div></section>' +
+  el.innerHTML = '<section class="card"><h2>현재 표시 이름</h2><div class="msg">닉네임을 바꾸면 이 프로필 이름도 함께 변경돼요.</div><div class="search"><input id="nset" type="text" maxlength="12" autocomplete="off" value="' + esc(nick || "") + '" placeholder="부르고 싶은 이름" aria-label="닉네임"><button class="btn" id="nsv" type="button">저장</button></div><div class="msg" id="nm"></div></section>' +
     '<section class="card"><h2>화면 설정</h2><div class="cfg"><label>글자 크기<select id="usize">' + ["보통", "크게", "아주 크게"].map((n, i) => '<option value="' + i + '"' + (ui.size === i ? " selected" : "") + ">" + n + "</option>").join("") + '</select></label><label>고대비 모드<select id="uhc"><option value="0"' + (ui.hc ? "" : " selected") + '>끄기</option><option value="1"' + (ui.hc ? " selected" : "") + '>켜기</option></select></label></div><div class="msg">누구나 편하게 볼 수 있도록 글자 크기와 대비를 바꿀 수 있어요.</div></section>' +
-    '<section class="card"><h2>기록 백업과 복원</h2><div class="msg">기기를 바꿔도 기록을 옮길 수 있어요. 백업 코드를 만들어 보관해 두세요.</div><button class="btn" id="bk" type="button" style="margin-top:8px">백업 코드 만들기</button><textarea id="bkt" style="width:100%;height:80px;padding:8px 12px;margin-top:12px" aria-label="백업 코드"></textarea><button class="btn ghost" id="rs" type="button" style="margin-top:8px">이 코드로 복원하기</button><div class="msg" id="bkm"></div></section>' +
-    '<section class="card"><h2>앱 정보</h2><div class="msg">슬기로운 중학생활 · 나이스(NEIS) 교육정보 개방 포털 직접 연동</div><div class="msg">이 앱은 개인정보를 서버로 보내지 않아요. 취향, 숙제, 용돈 같은 기록은 이 기기의 브라우저에만 저장돼요. 급식 알레르기 정보는 참고용이니 정확한 내용은 학교 급식실에서 확인하세요.</div><div class="cfg" style="margin-top:12px"><button class="btn ghost" id="refresh" type="button">급식·일정 새로고침</button><button class="btn ghost" id="wipe" type="button">내 기록 모두 지우기</button></div><div class="msg" id="am"></div></section>';
+    '<section class="card"><h2>기록 백업과 복원</h2><div class="msg">현재 프로필의 기록을 백업해 기기를 바꿀 때 복원할 수 있어요. 백업 코드는 안전한 곳에 보관해 주세요.</div><button class="btn" id="bk" type="button" style="margin-top:8px">백업 코드 만들기</button><textarea id="bkt" style="width:100%;height:80px;padding:8px 12px;margin-top:12px" aria-label="백업 코드"></textarea><button class="btn ghost" id="rs" type="button" style="margin-top:8px">이 코드로 복원하기</button><div class="msg" id="bkm"></div></section>' +
+    '<section class="card"><h2>앱 정보</h2><div class="msg">슬기로운 중학생활 · 나이스(NEIS) 교육정보 개방 포털 직접 연동</div><div class="msg">취향, 숙제, 용돈 같은 기록은 닉네임별로 이 브라우저에 저장돼요. 로그인 계정은 아니므로 같은 닉네임을 쓰면 같은 프로필을 사용해요. 급식 알레르기 정보는 참고용이니 정확한 내용은 학교 급식실에서 확인하세요.</div><div class="cfg" style="margin-top:12px"><button class="btn ghost" id="refresh" type="button">급식·일정 새로고침</button><button class="btn ghost" id="wipe" type="button">내 기록 모두 지우기</button></div><div class="msg" id="am"></div></section>';
   $("#refresh").onclick = () => { pruneCache(false); if (school){ load(); $("#am").textContent = "다시 불러오고 있어요."; } };
-  $("#wipe").onclick = () => { if (!confirm("이 기기에 저장된 내 기록(취향, 숙제, 용돈 등)을 모두 지워요. 계속할까요?")) return; try { localStorage.clear(); } catch(e){} location.reload(); };
-  $("#nsv").onclick = () => { nick = $("#nset").value.trim().slice(0, 12); store.set("nick", nick); $("#nm").textContent = "저장했어요."; $("#school").textContent = hello() + " · " + school.name; };
+  $("#wipe").onclick = () => { if (!confirm("이 기기에 저장된 내 기록(취향, 숙제, 용돈 등)을 모두 지워요. 계속할까요?")) return; store.removeProfile(); safeSessionRemove(SESSION_PROFILE); safeSessionRemove(SESSION_NICK); location.reload(); };
+  $("#nsv").onclick = () => renameActiveProfile($("#nset").value.trim().slice(0, 12));
   $("#bk").onclick = () => {
     try {
-      const o = {}; KEEP.forEach(k => { const v = localStorage.getItem(k); if (v !== null) o[k] = v; });
+      const o = {}; KEEP.forEach(k => { const v = store.rawGet(k); if (v !== null) o[k] = v; });
       const c = b64e(JSON.stringify(o)); $("#bkt").value = c; $("#bkt").select();
       const fail = () => { $("#bkm").textContent = "코드를 만들었어요. 직접 복사해 주세요."; };
       try { navigator.clipboard.writeText(c).then(() => { $("#bkm").textContent = "코드를 만들고 복사했어요."; }, fail); } catch(e){ fail(); }
@@ -923,7 +1113,7 @@ function renderSet(){
     const ok = Object.keys(o).filter(k => KEEP.has(k) && typeof o[k] === "string" && (() => { try { JSON.parse(o[k]); return true; } catch(e){ return false; } })());
     if (!ok.length){ $("#bkm").textContent = "복원할 기록이 없는 코드예요."; return; }
     if (!confirm("지금 기록을 이 코드의 내용(" + ok.length + "종류)으로 덮어써요. 계속할까요?")) return;
-    ok.forEach(k => localStorage.setItem(k, o[k])); location.reload();
+    ok.forEach(k => store.rawSet(k, o[k])); location.reload();
   };
 }
 document.addEventListener("change", e => {
@@ -961,7 +1151,7 @@ const CATS = {
   school:{n:"학교", d:"학교에서 수업을 들을 때 확인해요", s:[["tt","시간표"],["ev","일정"],["hw","숙제"],["info","학교 정보"]]},
   meal:{n:"급식", d:"점심시간에 먹는 급식 정보예요", s:[["today","오늘"],["week","주간"],["month","월간"],["me","내 기록"]]},
   back:{n:"하교", d:"학교를 마친 뒤에 확인해요", s:[["back","하교 준비"]]},
-  life:{n:"생활", d:"시간과 상관없이 언제든 써요", s:[["bank","용돈 기입장"],["set","설정"]]}
+  life:{n:"생활", d:"공부 습관과 개인 기록을 관리해요", s:[["focus","집중 타이머"],["bank","용돈 기입장"],["set","설정"]]}
 };
 let cat = "go", sub = "go", opened = false, userNav = false;
 function show(c, sb){
@@ -969,10 +1159,11 @@ function show(c, sb){
   const C = CATS[c];
   $("#main").dataset.c = c;
   $("#cathead").innerHTML = "<div><b>" + C.n + "</b><small>" + C.d + "</small></div>";
-  $("#nav").innerHTML = Object.keys(CATS).map(k => '<button type="button" data-cat="' + k + '"' + (k === c ? ' aria-current="true"' : "") + ">" + CATS[k].n + "</button>").join("");
+  const NAV_ICONS = {go:"↗", school:"▦", meal:"◒", back:"↙", life:"✦"};
+  $("#nav").innerHTML = Object.keys(CATS).map(k => '<button type="button" data-cat="' + k + '" aria-label="' + CATS[k].n + '"' + (k === c ? ' aria-current="true"' : "") + '><span aria-hidden="true">' + NAV_ICONS[k] + '</span><span>' + CATS[k].n + "</span></button>").join("");
   $("#subtabs").hidden = C.s.length < 2;
   $("#subtabs").innerHTML = C.s.map(x => '<button type="button" data-sub="' + x[0] + '" aria-current="' + (x[0] === sub) + '">' + x[1] + "</button>").join("");
-  ["go","tt","ev","dd","today","week","month","me","back","bank","hw","set","info"].forEach(id => { $("#" + id).hidden = id !== sub && !(sub === "ev" && id === "dd"); });
+  ["go","tt","ev","dd","today","week","month","me","back","focus","bank","hw","set","info"].forEach(id => { $("#" + id).hidden = id !== sub && !(sub === "ev" && id === "dd"); });
   $("#algcard").hidden = c !== "meal";
 }
 function autoOpen(){
@@ -993,11 +1184,12 @@ document.addEventListener("click", e => {
 
 function start(){
   opened = false; userNav = false;
-  $("#picker").hidden = true; $("#main").hidden = false; $("#change").hidden = false;
+  $("#picker").hidden = true; $("#nick").hidden = true; $("#main").hidden = false; $("#change").hidden = false; $("#switch-user").hidden = false;
   $("#school").textContent = hello() + " · " + school.name;
-  buildAlgs(); renderBank(); renderDd(); renderHw(); renderSet(); renderInfo(); show("go"); load();
+  buildAlgs(); renderFocus(); renderBank(); renderDd(); renderHw(); renderSet(); renderInfo(); show("go"); load();
 }
 $("#find").onclick = search;
+$("#q").addEventListener("keydown", e => { if (e.key === "Enter") search(); });
 $("#demo").onclick = () => { demo = true; school = {atpt: "X", code: "0", name: "샘플 학교 (체험용)", office: "서울특별시교육청", kind: "중학교", addr: "서울특별시 샘플구 샘플로 1", tel: "02-000-0000", site: "", fond: "공립", coed: "남여공학"}; start(); };
 $("#change").onclick = () => { $("#picker").hidden = false; $("#main").hidden = true; $("#back-to").hidden = !school; $("#q").focus(); };
 $("#back-to").onclick = () => { $("#picker").hidden = true; $("#main").hidden = false; };
@@ -1017,14 +1209,45 @@ netState();
 
 document.addEventListener("click", e => { if (e.target.closest("[data-budget]")){ store.set("budget", 0); renderBank(); } });
 
-/* 닉네임 */
-let nick = store.get("nick", null);
+/* 닉네임 · 세션 전환 */
+function renameActiveProfile(nextNick){
+  const clean = String(nextNick || "").trim().slice(0, 12), nextId = profileIdFor(clean);
+  if (nextId !== activeProfile){
+    const oldPrefix = profileStoragePrefix(), nextPrefix = "slm:user:" + nextId + ":";
+    const oldKeys = [], targetKeys = [];
+    try {
+      for (let i=0; i<localStorage.length; i++){
+        const key = localStorage.key(i);
+        if (key && key.startsWith(oldPrefix)) oldKeys.push(key);
+        if (key && key.startsWith(nextPrefix)) targetKeys.push(key);
+      }
+      if (targetKeys.length){
+        if (!confirm("같은 닉네임으로 저장된 프로필이 이미 있어요. 기존 프로필로 전환할까요?")) return;
+      } else {
+        oldKeys.forEach(key => { const dest = nextPrefix + key.slice(oldPrefix.length); localStorage.setItem(dest, localStorage.getItem(key)); localStorage.removeItem(key); });
+      }
+    } catch(e){ alert("프로필을 변경하지 못했어요. 브라우저 저장 공간을 확인해 주세요."); return; }
+    activeProfile = nextId; safeSessionSet(SESSION_PROFILE, activeProfile);
+  }
+  nick = clean; safeSessionSet(SESSION_NICK, nick); location.reload();
+}
 const hello = () => { const h = new Date().getHours(), g = h < 5 ? "늦은 시간이에요" : h < 11 ? "좋은 아침이에요" : h < 14 ? "점심시간이에요" : h < 18 ? "오후도 힘내요" : "오늘도 수고했어요"; return (nick ? nick + "님, " : "") + g; };
-function saveNick(v){ nick = v; store.set("nick", v); $("#nick").hidden = true; if (school) start(); else { $("#picker").hidden = false; $("#q").focus(); } }
-$("#nsave").onclick = () => saveNick($("#nin").value.trim().slice(0, 12));
+function saveNick(v){
+  nick = String(v || "").trim().slice(0, 12);
+  activeProfile = profileIdFor(nick);
+  safeSessionSet(SESSION_PROFILE, activeProfile);
+  safeSessionSet(SESSION_NICK, nick);
+  migrateLegacyProfile();
+  location.reload();
+}
+$("#nsave").onclick = () => saveNick($("#nin").value);
 $("#nskip").onclick = () => saveNick("");
-$("#nin").addEventListener("keydown", e => { if (e.key === "Enter") saveNick($("#nin").value.trim().slice(0, 12)); });
-if (nick === null){ $("#picker").hidden = true; $("#nick").hidden = false; $("#nin").focus(); } else if (school) start();
+$("#nin").addEventListener("keydown", e => { if (e.key === "Enter") saveNick($("#nin").value); });
+$("#switch-user").onclick = () => { safeSessionRemove(SESSION_PROFILE); safeSessionRemove(SESSION_NICK); location.reload(); };
+if (!activeProfile){ $("#picker").hidden = true; $("#nick").hidden = false; $("#nin").focus(); }
+else if (school) start();
+else { $("#nick").hidden = true; $("#picker").hidden = false; $("#switch-user").hidden = false; }
+
 </script>
 </body>
 </html>
